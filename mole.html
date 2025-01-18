@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<body style="background-color: rgb(217, 118, 118);">
+
+    <img id="mole" height="600" src="https://cdn.dribbble.com/users/80581/screenshots/3770081/moleatwork.gif" alt="">
+
+    <h1>Time left: <span id="timer">30</span> seconds</h1>
+    <h1>Score: <span id="score">0</span></h1>
+
+    <script>
+        let timer = 30; // Initial timer value (30 seconds)
+        let score = 0;  // Initial score
+        let timerInterval;
+        let moveInterval;
+
+        // Function to update the timer
+        function updateTimer() {
+            if (timer > 0) {
+                timer -= 1; // Decrease the timer by 1 second
+                document.getElementById('timer').textContent = timer;
+            } else {
+                clearInterval(timerInterval); // Stop the timer when it reaches 0
+                alert('Time is up!');
+            }
+        }
+
+        // Function to start the timer countdown
+        function startTimer() {
+            if (!timerInterval) {
+                timerInterval = setInterval(updateTimer, 1000); // Update every 1 second
+            }
+        }
+
+        // Function to increase score by 10 points
+        function increaseScore() {
+            score += 10; // Increase score by 10
+            document.getElementById('score').textContent = score;
+        }
+
+        // Function to move the mole image to a random position
+        function moveMole() {
+            const mole = document.getElementById('mole');
+            mole.style.position = 'absolute';
+            mole.style.left = Math.random() * 700 + 'px';
+            mole.style.top = Math.random() * 700 + 'px';
+        }
+
+        // Function to handle image click with a small delay and update score
+        function handleImageClick() {
+            // Increase the score by 10 when clicked
+            increaseScore();
+
+            // Pause the mole for 1 second before it moves again
+            setTimeout(() => {
+                moveMole(); // Move the mole after a 1-second delay
+            }, 1000); // Delay of 1 second
+        }
+
+        // Start the countdown timer when the page loads
+        window.onload = function () {
+            startTimer();
+            moveInterval = setInterval(moveMole, 1000); // Move the mole every 500ms
+        };
+
+        // Add event listener to the mole image
+        document.getElementById('mole').addEventListener('click', handleImageClick);
+
+    </script>
+
+</body>
+
+</html>

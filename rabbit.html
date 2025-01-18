@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Rabbit and Carrot Game</title>
+<style>
+body {
+  font-family: sans-serif;
+  text-align: center;
+}
+#game-container {
+  width: 400px;
+  margin: 0 auto;
+  border: 1px solid #ccc;
+  padding: 20px;
+}
+#rabbit {
+  width: 50px;
+  height: 50px;
+  background-color: #f0c0c0;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+#carrot {
+  width: 30px;
+  height: 50px;
+  background-color: orange;
+  position: absolute;
+  top: 0;
+  left: 350px;
+}
+</style>
+</head>
+<body>
+
+<h1>Rabbit and Carrot Game</h1>
+
+<div id="game-container">
+  <div id="rabbit"></div>
+  <div id="carrot"></div>
+</div>
+
+<script>
+const rabbit = document.getElementById('rabbit');
+const carrot = document.getElementById('carrot');
+let rabbitX = 0;
+let rabbitY = 0;
+
+function moveRabbit() {
+  const maxX = gameContainer.clientWidth - rabbit.clientWidth;
+  const maxY = gameContainer.clientHeight - rabbit.clientHeight;
+
+  rabbitX = Math.floor(Math.random() * maxX);
+  rabbitY = Math.floor(Math.random() * maxY);
+
+  rabbit.style.left = rabbitX + 'px';
+  rabbit.style.top = rabbitY + 'px';
+}
+
+function checkCollision() {
+  const rabbitRect = rabbit.getBoundingClientRect();
+  const carrotRect = carrot.getBoundingClientRect();
+
+  if (
+    rabbitRect.left < carrotRect.right &&
+    rabbitRect.right > carrotRect.left &&
+    rabbitRect.top < carrotRect.bottom &&
+    rabbitRect.bottom > carrotRect.top
+  ) {
+    alert("Rabbit caught the carrot!");
+    moveCarrot(); 
+  }
+}
+
+function moveCarrot() {
+  const maxX = gameContainer.clientWidth - carrot.clientWidth;
+  const maxY = gameContainer.clientHeight - carrot.clientHeight;
+
+  carrot.style.left = Math.floor(Math.random() * maxX) + 'px';
+  carrot.style.top = Math.floor(Math.random() * maxY) + 'px';
+}
+
+// Initial placement
+moveRabbit();
+moveCarrot();
+
+// Event listener for game updates (e.g., every second)
+setInterval(() => {
+  moveRabbit();
+  checkCollision();
+}, 1000); 
+
+</script>
+
+</body>
+</html>
