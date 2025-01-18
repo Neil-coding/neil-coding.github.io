@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Snake Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+    }
+    canvas {
+      background-color: #000;
+      margin-top: 20px;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    button {
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #score {
+      font-size: 24px;
+      margin-top: 10px;
+    }
+    #startButton {
+      margin-top: 20px;
+      padding: 15px;
+      font-size: 18px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    #startButton:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Snake Game</h1>
+
+<canvas id="gameCanvas" width="400" height="400"></canvas>
+
+<div class="controls">
+  <button onclick="moveLeft()">Left</button>
+  <button onclick="moveUp()">Up</button>
+  <button onclick="moveDown()">Down</button>
+  <button onclick="moveRight()">Right</button>
+</div>
+
+<div id="score">Score: 0</div>
+
+<button id="startButton" onclick="startGame()">Start Game</button>
+
+<script>
+  const canvas = document.getElementById("gameCanvas");
+  const ctx = canvas.getContext("2d");
+
+  const gridSize = 20;
+  const canvasSize = 400;
+  let score = 0;
+  let gameInterval;
+  let gameStarted = false;
+
+  let snake;
+  let food;
+  let dx, dy;
+
+  function startGame() {
+    // Reset game state and start the game
+    snake = [
+      { x: 160, y: 200 },
+      { x: 140, y: 200 },
+      { x: 120, y: 200 }
+    ];
+    food = { x: 200, y: 200 };
+    dx = gridSize;
+    dy = 0;
+    score = 0;
+    document.getElementById("score").textContent = `Score: ${score}`;
+    
+    gameStarted = true;
+
+    // Hide start button and show controls
+    document.getElementById("startButton").style.display = "none";
+    document.querySelector(".controls").style.display = "flex";
+
+    // Start the game loop
+    drawGame();
+  }
+
+  function drawGame() {
+    if (!gameStarted) return;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw snake
+    snake.forEach((part, index) => {
+      ctx.fillStyle = index === 0 ? "green" : "lightgreen";
+      ctx.fillRect(part.x, part.y, gridSize, gridSize);
+    });
+
+    // Draw food
+    ctx.fillStyle = "red";
+    ctx.fillRect(food.x, food.y, gridSize, gridSize);
+
+    // Move the snake
+    let head = { x: snake[0].x + dx, y: snake[0].y + dy };
+    snake.unshift(head);
+
+    // Check for food collision
+    if (head.x === food.x && head.y === food.y) {
+      score += 10;
+      document.getElementById("score").textContent = `Score: ${score}`;
+      generateFood();
+    } else {
+      snake.pop();
+    }
+
+    // Check for wall collision
+    if (head.x < 0 || head.x >= canvasSize || head.y < 0 || head.y >= canvasSize || collision(head)) {
+      gameOver();
+      return;
+    }
+
+    // Continue the game loop
+    gameInterval = setTimeout(drawGame, 150); // Slow down the game speed (150ms)
+  }
+
+  function moveLeft() {
+    if (dx === 0) {
+      dx = -gridSize;
+      dy = 0;
+    }
+  }
+
+  function moveUp() {
+    if (dy === 0) {
+      dx = 0;
+      dy = -gridSize;
+    }
+  }
+
+  function moveDown() {
+    if (dy === 0) {
+      dx = 0;
+      dy = gridSize;
+    }
+  }
+
+  function moveRight() {
+    if (dx === 0) {
+      dx = gridSize;
+      dy = 0;
+    }
+  }
+
+  function generateFood() {
+    food.x = Math.floor(Math.random() * (canvasSize / gridSize)) * gridSize;
+    food.y = Math.floor(Math.random() * (canvasSize / gridSize)) * gridSize;
+  }
+
+  function collision(head) {
+    for (let i = 1; i < snake.length; i++) {
+      if (head.x === snake[i].x && head.y === snake[i].y) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function gameOver() {
+    alert("Game Over!");
+    // Stop the game and show start button again
+    gameStarted = false;
+    clearTimeout(gameInterval);
+
+    // Show the start button again and hide controls
+    document.getElementById("startButton").style.display = "inline-block";
+    document.querySelector(".controls").style.display = "none";
+  }
+
+</script>
+
+</body>
+</html>
